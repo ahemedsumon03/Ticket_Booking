@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Booking App</title>
+    <script src="vue.global.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="main">
+
+    <h1 class="app-title">Ticket Booking App</h1>
+    <div class="ticket-app">
+        <div class="confirmed-dialog" v-if="confirmed">
+            <h3>Ticket confirmed!</h3>
+            <hr />
+            <br />
+            <table class="selected-seats">
+                <tr>
+                    <th>Passenger Name</th>
+                    <td>{{name}}</td>
+                </tr>
+
+                <tr>
+                    <th>Passenger Contact</th>
+                    <td>{{mobile}}</td>
+                </tr>
+                <tr>
+                    <th>Seats:</th>
+                    <td>
+                        <div v-for="(seat, i) in SelectedItem" :key="seat.name">
+                            <div>{{seat.name}}</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Total Cost</th>
+                    <td>Tk. {{TotalTaka}}</td>
+                </tr>
+            </table>
+
+            <br />
+
+            <button class="confirm-button" @click="resetData">Book Again</button>
+        </div>
+        <div class="ticket-app__top">
+           <div class="seat-state" v-for="(value,key) in seatStates">
+               <div class="seat-state__color" :style="{backgroundColor:value.color}"></div>
+               <div class="seat-state__text">{{value.text}}</div>
+           </div>
+        </div>
+        <div class="ticket-app__bottom">
+            <div class="ticket-app__left">
+                <div class="bus">
+                    <div class="bus__top">
+                        <div class="bus__door">Door</div>
+                        <div class="bus__driver">Driver</div>
+                    </div>
+                    <div class="seats">
+                        <div
+                                class="seat"
+                                v-for="(item,i) in seats"
+                                :key="item.name"
+                                @click="handlerClick(i)"
+                                :class="{
+                                   'seat--sold':item.type === 'sold',
+                                   'seat--booked':item.type === 'booked',
+                                   'seat--selected':item.type === 'selected'
+                                }"
+                        >
+                            {{item.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ticket-app__instruction" v-if="SelectedItem.length === 0">
+                No seats selected <br />
+                Select some seats first
+            </div>
+            <div class="ticket-app__right" v-else>
+                <h4 class="app-title">Selected Seat</h4>
+                <table>
+                    <tr>
+                        <th>Seat</th>
+                        <th>Price</th>
+                    </tr>
+                    <tr v-for="(seat,i) in SelectedItem" :key="seat.name">
+                        <td>{{seat.name}}</td>
+                        <td>{{seat.price}}</td>
+                    </tr>
+                    <tr v-if="appliedCoupon !== null">
+                        <td>Discount</td>
+                        <td> -{{appliedCoupon.discount}}TK</td>
+                    </tr>
+                    <tr>
+                        <td>Total Cost</td>
+                        <td>{{TotalTaka}} Taka</td>
+                    </tr>
+                </table>
+                <p v-if="appliedCoupon === null">
+                    Have a Coupon?
+                    <input type="text" placeholder="Enter your coupon code" v-model="couponCode">
+                </p>
+
+                <p v-else>Coupon Code: {{appliedCoupon.code}}</p>
+                <div class="info">
+                    <input type="text" placeholder="Name" v-model="name" />
+                    <input type="text" placeholder="Mobile" v-model="mobile" />
+                </div>
+
+                <button class="confirm-button" @click="confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
